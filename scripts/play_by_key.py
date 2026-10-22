@@ -28,6 +28,13 @@ import torch
 import os
 from isaacgym.torch_utils import *
 from isaacgym.torch_utils import quat_from_euler_xyz, quat_mul
+
+# 直接运行 scripts/play_by_key.py 时，sys.path 只有 scripts/，仓库根目录不在其中
+_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+_REPO_ROOT = os.path.dirname(_SCRIPT_DIR)
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
 from go1_gym.envs import *
 from go1_gym.envs.automatic import KeyboardWrapper
 from go1_gym.utils import quaternion_to_rpy
@@ -792,7 +799,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Go1")
     parser.add_argument('--headless', action='store_true', default=False)
     parser.add_argument('--sim_device', type=str, default="cuda:0")
-    parser.add_argument('--robot', type=str, default="go1", choices=["go1", "go2", "go2_airbot"],
+    parser.add_argument('--robot', type=str, default="go1", choices=["go1", "go2", "go2_airbot", "go2_piper"],
                        help='Robot type hint for CLI compatibility (play env still follows training config in logdir).')
     parser.add_argument('--logdir', type=str)
     parser.add_argument('--ckptid', type=int, default=40000)

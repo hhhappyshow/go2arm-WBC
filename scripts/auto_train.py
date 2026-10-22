@@ -27,10 +27,16 @@ assert isaacgym
 import torch
 import argparse
 
+# 直接运行 scripts/auto_train.py 时，sys.path 只有 scripts/，仓库根目录不在其中
+_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+_REPO_ROOT = os.path.dirname(_SCRIPT_DIR)
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
 from go1_gym.envs.automatic.legged_robot_config import Cfg
 from go1_gym.envs.go1.go1_config import config_go1
 from go1_gym.envs.go1.wtw_config import config_wtw
-from go1_gym.envs.go1.asset_config import config_asset, config_go2_airbot_asset
+from go1_gym.envs.go1.asset_config import config_asset, config_go2_airbot_asset, config_go2_piper_asset
 
 import wandb
 import os.path as osp
@@ -91,6 +97,8 @@ def train_go1(args):
     # 根据机器人类型选择配置
     if args.robot == "go2_airbot":
         config_go2_airbot_asset(Cfg)
+    elif args.robot == "go2_piper":
+        config_go2_piper_asset(Cfg)
     else:
         config_asset(Cfg)
     
@@ -233,6 +241,8 @@ def train_go1(args):
         Cfg.asset.file = '{MINI_GYM_ROOT_DIR}/resources/robots/go2/urdf/arx5go2.urdf'
     elif args.robot == "go2_airbot":
         Cfg.asset.file = '{MINI_GYM_ROOT_DIR}/resources/robots/go2_airbot/urdf/go2_airbot.urdf'
+    elif args.robot == "go2_piper":
+        Cfg.asset.file = '{MINI_GYM_ROOT_DIR}/resources/robots/go2_piper/urdf/go2_piper.urdf'
     
     if args.headless:
         RunnerArgs.log_video = False
@@ -320,7 +330,7 @@ if __name__ == '__main__':
     parser.add_argument('--tags', nargs='+', default=[])
     parser.add_argument('--notes', type=str, default=None)
     parser.add_argument('--seed', type=int, default=-1)
-    parser.add_argument('--robot', type=str, default="go1", choices=["go1", "go2", "go2_airbot"])
+    parser.add_argument('--robot', type=str, default="go1", choices=["go1", "go2", "go2_airbot", "go2_piper"])
     parser.add_argument('--wo_two_stage', action='store_true', default=False)
     parser.add_argument('--use_rot6d', action='store_true', default=False)
     args = parser.parse_args()

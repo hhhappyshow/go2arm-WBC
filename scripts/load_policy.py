@@ -169,6 +169,8 @@ def load_env(logdir, wrapper, headless=False, device='cuda:0', num_envs=None):
             Cfg.asset.end_effector_name = "zarx_body6"
         elif 'go2_airbot' in asset_file:
             Cfg.asset.end_effector_name = "arm_link06"
+        elif 'go2_piper' in asset_file:
+            Cfg.asset.end_effector_name = "end_link"
         # 如果没有匹配的机器人类型，保持为空字符串（使用默认 ee_idx = 23）
     
     Cfg.terrain.mesh_type = "plane"

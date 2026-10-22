@@ -436,6 +436,10 @@ class KeyboardWrapper(VelocityTrackingEasyEnv):
             self.viewer, gymapi.KEY_R, "reset")
         self.gym.subscribe_viewer_keyboard_event(
             self.viewer, gymapi.KEY_T, "eval_once")
+        self.gym.subscribe_viewer_keyboard_event(
+            self.viewer, gymapi.KEY_ENTER, "clear velocity")
+        self.gym.subscribe_viewer_keyboard_event(
+            self.viewer, gymapi.KEY_NUMPAD_ENTER, "clear velocity")
     def _get_actual_base_vel(self):
         """Return measured base velocity as (x_vel, y_vel, yaw_vel)."""
         if hasattr(self, "base_lin_vel") and hasattr(self, "base_ang_vel"):
@@ -580,6 +584,9 @@ class KeyboardWrapper(VelocityTrackingEasyEnv):
                     self.commands_dog[0, 2] += 0.1
                 elif evt.action == 'turn right' and evt.value > 0:
                     self.commands_dog[0, 2] -= 0.1
+                elif evt.action == 'clear velocity' and evt.value > 0:
+                    self.commands_dog[:, 0:3] = 0.0
+                    self._print_vel_cmd_real(force=True)
                 elif evt.action == 'arm up' and evt.value > 0:
                     if self.use_xyz_arm_keyboard:
                         self._nudge_arm_target_xyz("z", +1)

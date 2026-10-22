@@ -177,3 +177,81 @@ def config_go2_airbot_asset(Cnfg: Union[Cfg, Meta]):
         # "g2_right_joint": 0.0,
         
     }
+
+def config_go2_piper_asset(Cnfg: Union[Cfg, Meta]):
+    """配置 go2_piper 机器人（GO2 底盘 + AgileX Piper）。
+
+    Piper 的 j2 轴在机身系是 +Y，默认角取正；j3 轴也是 +Y，但限位只有负半轴，默认角取负。
+    这和 Airbot（j2/j3 轴都是 -Y，默认 -0.3 / +0.3）不是同一套符号。
+    """
+
+    Cnfg.asset.file = '{MINI_GYM_ROOT_DIR}/resources/robots/go2_piper/urdf/go2_piper.urdf'
+    Cnfg.asset.end_effector_name = "end_link"
+
+    Cnfg.asset.penalize_contacts_on = [
+        'base',
+        "arm", "arm_link",
+        "end_link",
+        "gripper", "thigh", "calf",
+        "Head"
+    ]
+
+    Cnfg.asset.terminate_after_contacts_on = ['']
+    Cnfg.asset.hip_joints = {'hip'}
+
+    Cnfg.control.stiffness = {'joint': 35., "arm": 5.}  # [N*m/rad]
+
+    # 数值沿用 Airbot 的起始 PD。臂走位置目标，真正生效的是这里的 stiffness/damping。
+    Cnfg.arm.control.stiffness_arm = {
+            "arm": 50,
+            "arm_j1": 40,
+            "arm_j2": 70,
+            "arm_j3": 70,
+            "arm_j4": 25,
+            "arm_j5": 25,
+            "arm_j6": 25,
+    }  # [N*m/rad]
+    Cnfg.arm.control.damping_arm = {
+            "arm": 20,
+            "arm_j1": 3,
+            "arm_j2": 15,
+            "arm_j3": 15,
+            "arm_j4": 2,
+            "arm_j5": 2,
+            "arm_j6": 2,
+    }  # [N*m*s/rad]
+
+    Cnfg.dog.control.stiffness_leg = {'joint': 35.}  # [N*m/rad]
+    Cnfg.dog.control.damping_leg = {'joint': 1.}  # [N*m*s/rad]
+
+    Cnfg.asset.render_sphere = True # NOTE no use in headless
+
+    # Piper 臂展短于 Airbot 的 end_link 链，先把球坐标半径收进大约一个臂长。
+    Cnfg.arm.commands.l = [0.25, 0.62]
+
+    Cnfg.init_state.default_joint_angles = {
+        'FL_hip_joint': 0.1,
+        'RL_hip_joint': 0.1,
+        'FR_hip_joint': -0.1,
+        'RR_hip_joint': -0.1,
+
+        'FL_thigh_joint': 0.8,
+        'RL_thigh_joint': 1.,
+        'FR_thigh_joint': 0.8,
+        'RR_thigh_joint': 1.,
+
+        'FL_calf_joint': -1.5,
+        'RL_calf_joint': -1.5,
+        'FR_calf_joint': -1.5,
+        'RR_calf_joint': -1.5,
+
+        "arm_j1": 0.0,
+        "arm_j2": 0.3,
+        "arm_j3": -0.3,
+        "arm_j4": 0.0,
+        "arm_j5": 0.0,
+        "arm_j6": 0.0,
+        # 夹爪不在 6 维动作里，仍是自由度，必须有默认角
+        "arm_j7": 0.0,
+        "arm_j8": 0.0,
+    }
