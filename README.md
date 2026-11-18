@@ -31,6 +31,17 @@ python scripts/auto_train.py \
   --headless
 ```
 
+Go2 + Piper：
+
+```bash
+python scripts/auto_train.py \
+  --num_envs 4096 \
+  --run_name go2_piper \
+  --sim_device cuda:0 \
+  --robot go2_piper \
+  --headless
+```
+
 日志写在 `runs/<run_name>/<日期>/auto_train/<时间>_seed<seed>/`。狗和臂的权重分别在 `checkpoints_dog/`、`checkpoints_arm/`。
 
 `scripts/unified_train.py` 用同一个网络同时输出狗和臂的动作，机器人选项是 `go1` 和 `go2`。
@@ -39,7 +50,7 @@ python scripts/auto_train.py \
 
 | 开关 | 作用 |
 | --- | --- |
-| `--robot go2_airbot` | Go2 + Airbot。也可选 `go1`、`go2` |
+| `--robot go2_airbot` | Go2 + Airbot。也可选 `go1`、`go2`、`go2_piper` |
 | `--headless` | 不打开仿真窗口 |
 | `--num_envs` | 并行环境数，默认 2048 |
 | `--num_learning_iterations` | 训练迭代数，默认 100000 |
@@ -66,6 +77,15 @@ python scripts/play_by_key.py \
   --sim_device cuda:0
 ```
 
+克隆后可以直接看 Go2 + Piper。机器人模型来自该目录的 `parameters.pkl`，权重是第 77200 次迭代：
+
+```bash
+python scripts/play_by_key.py \
+  --logdir runs/go2_piper/2026-10-20/auto_train/163130.840478_seed8876 \
+  --ckptid 77200 \
+  --sim_device cuda:0
+```
+
 `--headless` 关闭窗口。`--dog_only` 只跑狗策略。`--unified` 加载 `checkpoints_unified` 里的单网络权重。
 
 键盘：
@@ -77,3 +97,4 @@ python scripts/play_by_key.py \
 | Z / X | 左转 / 右转 | J / L | 臂向左 / 向右 |
 | W / S | 臂 pitch | A / D | 臂 roll |
 | Q / E | 臂 yaw | R | 复位 |
+| Enter | 清空前进、横移、转向速度 | | |

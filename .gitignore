@@ -1,5 +1,6 @@
-# Training outputs
-runs/
+# Training outputs. runs/go2_piper keeps one checkpoint so a fresh clone can play.
+runs/*
+!runs/go2_piper/
 wandb/
 
 # Python cache
@@ -29,6 +30,16 @@ wheels/
 # PyTorch
 *.pth
 *.pt
+
+# The tracked Go2+Piper play weights. log.txt is about 230MB and is left out.
+runs/go2_piper/**
+!runs/go2_piper/**/
+!runs/go2_piper/**/parameters.pkl
+!runs/go2_piper/**/params.txt
+!runs/go2_piper/**/checkpoints_dog/
+!runs/go2_piper/**/checkpoints_arm/
+!runs/go2_piper/**/checkpoints_dog/ac_weights_077200.pt
+!runs/go2_piper/**/checkpoints_arm/ac_weights_077200.pt
 
 # Jupyter Notebook
 .ipynb_checkpoints
